@@ -1,92 +1,109 @@
 package gosrm
 
 import (
-	"io/ioutil"
-	"fmt"
-	"net/http"
 	"encoding/json"
-	"io"
-	"context"
-	"strings"
+	"errors"
+	"github.com/paulmach/go.geo"
+	"io/ioutil"
+	"net/http"
 	"net/url"
+	"strconv"
+	"strings"
+	"time"
 )
 
-type (
-	HTTPClient interface {
-		Do(*http.Request) (*http.Response, error)
+// URL generates a url for OSRM request
+func (r *Request) URL(serverURL string) (*url.URL, error) {
+	u, err := url.Parse(serverURL)
+	if err != nil {
+		panic("gosrm: bad server Url string")
 	}
 
-	client struct {
-		httpClient HTTPClient
-		serverURL  string
-	}
-)
+	path := geo.Path{r.Coordinates}
 
-func newClient(serverURL string, c HTTPClient) client {
-	return client{c, serverURL}
+	u.Path += strings.Join([]string{
+		r.Service,
+		"v" + strconv.Itoa(r.Version),
+		r.Profile,
+		"polyline(" + url.PathEscape(path.Encode()) + ")",
+	}, "/")
+
+	parameters := url.Values{}
+
+	if r.Steps != nil {
+		parameters.Add("steps", strconv.FormatBool(*r.Steps))
+	}
+	if r.Alternatives != nil {
+		parameters.Add("alternatives", *r.Alternatives)
+	}
+	if r.Annotations != nil {
+		parameters.Add("annotations", *r.Annotations)
+	}
+	if r.Geometries != nil {
+		parameters.Add("geometries", *r.Geometries)
+	}
+	if r.ContinueStraight != nil {
+		parameters.Add("continue_straight", *r.ContinueStraight)
+	}
+	if r.Overview != nil {
+		parameters.Add("overview", *r.Overview)
+	}
+
+	u.RawQuery = parameters.Encode()
+
+	return u, nil
 }
 
-// request contains parameters for OSRM query
-type request struct {
-	profile string
-}
-
-func (c client) doRequest(ctx context.Context, in *request, out interface{}) error {
-	url, err := in.URL(c.serverURL)
-	if err != nil {
-		return err
-	}
-
-	resp, err := c.get(ctx, url)
-	if err != nil {
-		return err
-	}
-	defer closeSilently(resp.Body)
-
-	bytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("failed to read body: %v", err)
-	}
-
-	if resp.StatusCode != http.StatusOK && resp.StatusCode != http.StatusBadRequest {
-		return fmt.Errorf("unexpected http status code %d with body %q", resp.StatusCode, bytes)
-	}
-
-	if err := json.Unmarshal(bytes, out); err != nil {
-		return fmt.Errorf("failed to unmarshal body %q: %v", bytes, err)
-	}
-
-	return nil
-}
-
-func (c client) get(ctx context.Context, url string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", url, nil)
+func (r *Request) GetOSRMResponse() (*OSRMResponse, error) {
+	raw, err := r.fire()
 	if err != nil {
 		return nil, err
 	}
 
-	return c.httpClient.Do(req.WithContext(ctx))
+	body, err := ioutil.ReadAll(raw.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := &OSRMResponse{}
+	if err := json.Unmarshal(body, &resp); err != nil {
+		return nil, err
+	}
+
+	if resp.Code != CodeOK {
+
+		i, ok := RespCode[resp.Code]
+		if !ok {
+			i = resp.Message
+		}
+
+		return nil, errors.New(i)
+	}
+
+	return resp, nil
 }
 
-func closeSilently(c io.Closer) {
-	_ = c.Close()
-}
+func (r *Request) fire() (*http.Response, error) {
+	timeout := time.Duration(5 * time.Second)
+	client := http.Client{
+		Timeout: timeout,
+	}
 
-// URL generates a url for OSRM request
-func (r *request) URL(serverURL string) (string, error) {
-	if r.profile == "" {
-		return "", ErrEmptyProfileName
+	u, _ := r.URL(r.Url)
+
+	req := &http.Request{
+		Method: http.MethodGet,
+		URL:    u,
+		Header: nil,
 	}
-	// http://{server}/{service}/{version}/{profile}/{coordinates}[.{format}]?option=value&option=value
-	url := strings.Join([]string{
-		serverURL, // server
-		r.service, // service
-		version,   // version
-		r.profile, // profile
-		"polyline(" + url.PathEscape(r.coords.Polyline()) + ")", // coordinates
-	}, "/")
-	if len(r.options) > 0 {
-		url += "?" + r.options.encode() // options
+
+	//req.Header.Set("User-Agent","GOSRM/1.0.0")
+	//req.Header.Set("Accept","application/json")
+
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
 	}
-	return url, nil
+
+	return resp, nil
 }

@@ -3,19 +3,24 @@ package gosrm
 import "errors"
 
 // Errors which could be returned from OSRM Server
-const (
-	ErrorCodeInvalidURL     = "InvalidUrl"
-	ErrorCodeInvalidService = "InvalidService"
-	ErrorCodeInvalidVersion = "InvalidVersion"
-	ErrorCodeInvalidOptions = "InvalidOptions"
-	ErrorCodeInvalidQuery   = "InvalidQuery"
-	ErrorCodeInvalidValue   = "InvalidValue"
-	ErrorCodeNoSegment      = "NoSegment"
-	ErrorCodeTooBig         = "TooBig"
-	ErrorCodeNoRoute        = "NoRoute"
-	ErrorCodeNoTable        = "NoTable"
-	ErrorCodeNoMatch        = "NoMatch"
-)
+var RespCode = map[string]string{
+	"NoRoute":        "No route found",
+	"NoTable":        "No route found.",
+	"NoMatch":        "No matchings found.",
+	"NoTrips":        "No trips found because input coordinates are not connected.",
+	"NotImplemented": "This request is not supported",
+	"InvalidUrl":     "URL string is invalid",
+	"Ok":             "All OK",
+	"InvalidService": "Service name is invalid.",
+	"InvalidVersion": "OSRM Version is not found.",
+	"InvalidOptions": "Options are invalid.",
+	"InvalidQuery":   "The query string is synctactically malformed.",
+	"InvalidValue":   "The successfully parsed query parameters are invalid.",
+	"NoSegment":      "One of the supplied input coordinates could not snap to street segment.",
+	"TooBig":         "The request size violates one of the service specific request size restrictions",
+}
+
+const CodeOK = "Ok"
 
 // Invalid request errors
 var (

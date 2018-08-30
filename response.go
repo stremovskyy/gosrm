@@ -1,7 +1,8 @@
 package gosrm
 
-type RouteResponse struct {
+type OSRMResponse struct {
 	Code      string     `json:"code"`
+	Message   string     `json:"message"`
 	Routes    []Route    `json:"routes"`
 	Waypoints []Waypoint `json:"waypoints"`
 }
@@ -15,7 +16,7 @@ type Waypoint struct {
 type Route struct {
 	Geometry   string  `json:"geometry"`
 	Legs       []Leg   `json:"legs"`
-	Distance   int     `json:"distance"`
+	Distance   float64 `json:"distance"`
 	Duration   float64 `json:"duration"`
 	WeightName string  `json:"weight_name"`
 	Weight     float64 `json:"weight"`
@@ -24,7 +25,7 @@ type Route struct {
 type Leg struct {
 	Annotation Annotation `json:"annotation"`
 	Steps      []Step     `json:"steps"`
-	Distance   int        `json:"distance"`
+	Distance   float64    `json:"distance"`
 	Duration   float64    `json:"duration"`
 	Summary    string     `json:"summary"`
 	Weight     float64    `json:"weight"`
