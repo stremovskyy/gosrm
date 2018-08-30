@@ -1,8 +1,8 @@
 # GOSRM - GO Client for OSRM
 [![Build Status](https://travis-ci.org/Karmadon/gosrm.svg?branch=master)](https://travis-ci.org/Karmadon/gosrm)
-[![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/karmadon/gosrm)
+[![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/Karmadon/gosrm)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/karmadon/gosrm)](https://goreportcard.com/report/github.com/Karmadon/gosrm)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Karmadon/gosrm)](https://goreportcard.com/report/github.com/Karmadon/gosrm)
 
 Advanced OSRM client for golang.
 
