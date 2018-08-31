@@ -51,3 +51,7 @@ func main() {
     	fmt.Printf("%v", response)
 }
 ```
+
+### Full Example
+
+See `examples/main.go`
