@@ -13,7 +13,7 @@ Advanced OSRM client for golang.
 ## Installation
 
 ```bash
-go get github.com/karmadon/gosrm
+go get github.com/Karmadon/gosrm
 ```
 
 ## Quick Start
@@ -24,7 +24,7 @@ package main
 import (
 	"fmt"
 	"net/url"
-	"github.com/karmadon/gosrm"
+	"github.com/Karmadon/gosrm"
 	"github.com/paulmach/go.geo"
 )
 

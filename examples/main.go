@@ -4,7 +4,7 @@ import "github.com/paulmach/go.geo"
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/karmadon/gosrm"
+	"github.com/Karmadon/gosrm"
 	"net/url"
 )
 

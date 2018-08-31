@@ -19,19 +19,25 @@
 
 package gosrm
 
+// Main Response object
 type OSRMResponse struct {
-	Code         string       `json:"code,omitempty"`
-	Message      string       `json:"message,omitempty"`
-	Routes       []Route      `json:"routes,omitempty"`
-	Waypoints    []Waypoint   `json:"waypoints,omitempty"`
-	Durations    [][]float64  `json:"durations,omitempty"`    // Table Request
-	Destinations Destinations `json:"destinations,omitempty"` // Table Request
-	Sources      Sources      `json:"sources,omitempty"`      // For Table Request
-	Trips        Trips        `json:"trips,omitempty"`        // For Match Request
+	// Response code
+	Code string `json:"code,omitempty"`
+	// Response message for errors
+	Message string `json:"message,omitempty"`
+	// Routes array object
+	Routes []Route `json:"routes,omitempty"`
+	// Waypoints array object
+	Waypoints []Waypoint `json:"waypoints,omitempty"`
+
+	Durations    [][]float64   `json:"durations,omitempty"`    // Only for Table Request
+	Destinations []Destination `json:"destinations,omitempty"` // Only for Table Request
+	Sources      []Source      `json:"sources,omitempty"`      // Only for Table Request
+	Trips        []Trip        `json:"trips,omitempty"`        // Only for Match Request
 }
 
 // For Match Request
-type Trips []struct {
+type Trip struct {
 	Geometry   string  `json:"geometry,omitempty"`
 	Legs       []Leg   `json:"legs,omitempty"`
 	Distance   float64 `json:"distance,omitempty"`
@@ -41,19 +47,20 @@ type Trips []struct {
 }
 
 // For Table Request
-type Sources []struct {
+type Source struct {
 	Hint     string    `json:"hint,omitempty"`
 	Name     string    `json:"name,omitempty"`
 	Location []float64 `json:"location,omitempty"`
 }
 
 // For Table Request
-type Destinations []struct {
+type Destination struct {
 	Hint     string    `json:"hint,omitempty"`
 	Name     string    `json:"name,omitempty"`
 	Location []float64 `json:"location,omitempty"`
 }
 
+// OSRM Waypoint object
 type Waypoint struct {
 	Hint          string    `json:"hint,omitempty"`
 	Name          string    `json:"name,omitempty"`
@@ -73,6 +80,7 @@ type Route struct {
 	Weight     float64 `json:"weight,omitempty"`
 }
 
+// OSRM Leg
 type Leg struct {
 	Annotation Annotation `json:"annotation,omitempty"`
 	Steps      []Step     `json:"steps,omitempty"`
