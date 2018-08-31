@@ -35,29 +35,23 @@ import (
 // Osrm Client Object
 type OsrmClient struct {
 	httpClient *http.Client
-
-	Options *Options
+	Options    *Options
 }
 
-// NewClient creates a client with options
-func NewClient(options *Options) *OsrmClient {
-	timeout := time.Duration(time.Duration(options.RequestTimeout) * time.Second)
-
-	t := &http.Transport{
-		MaxIdleConnsPerHost: 1024,
-		TLSHandshakeTimeout: 0 * time.Second,
-	}
-
-	c := http.Client{
-		Transport: t,
-		Timeout:   timeout,
-	}
-
-	return &OsrmClient{&c, options}
+func (c *OsrmClient) Table(r *TableRequest) (*OSRMResponse, error) {
+	panic("implement me")
 }
 
-func (c OsrmClient) Route(r *RouteRequest) (*OSRMResponse, error) {
-	Url, err := r.Url(c)
+func (c *OsrmClient) Match(r *MatchRequest) (*OSRMResponse, error) {
+	panic("implement me")
+}
+
+func (c *OsrmClient) Nearest(r *NearestRequest) (*OSRMResponse, error) {
+	panic("implement me")
+}
+
+func (c *OsrmClient) Route(r *RouteRequest) (*OSRMResponse, error) {
+	Url, err := r.Url(*c)
 	if err != nil {
 		return nil, err
 	}
@@ -101,6 +95,24 @@ func (c OsrmClient) Route(r *RouteRequest) (*OSRMResponse, error) {
 	return routeResponse, nil
 }
 
+// NewClient creates a client with options
+func NewClient(options *Options) *OsrmClient {
+	timeout := time.Duration(time.Duration(options.RequestTimeout) * time.Second)
+
+	t := &http.Transport{
+		MaxIdleConnsPerHost: 1024,
+		TLSHandshakeTimeout: 0 * time.Second,
+	}
+
+	c := http.Client{
+		Transport: t,
+		Timeout:   timeout,
+	}
+
+	return &OsrmClient{&c, options}
+}
+
+// Gets Base url from options
 func (o *Options) BaseUrl() (*url.URL, error) {
 	u, err := url.Parse(o.Url.Host)
 	if err != nil {

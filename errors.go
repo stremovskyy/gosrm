@@ -19,8 +19,6 @@
 
 package gosrm
 
-import "errors"
-
 // Errors which could be returned from OSRM Server
 var RespCode = map[string]string{
 	"NoRoute":        "No route found",
@@ -40,10 +38,3 @@ var RespCode = map[string]string{
 }
 
 const CodeOK = "Ok"
-
-// Invalid request errors
-var (
-	ErrEmptyProfileName = errors.New("gosrm: the request should contain a profile name")
-	ErrNoCoordinates    = errors.New("gosrm: the request should contain coordinates")
-	ErrEmptyServiceName = errors.New("gosrm: the request should contain a service name")
-)

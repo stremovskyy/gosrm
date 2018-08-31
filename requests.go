@@ -21,11 +21,10 @@ package gosrm
 
 import (
 	"github.com/paulmach/go.geo"
-	"net/url"
 )
 
 const (
-	/* Finds the fastest route between coordinates in the supplied order */
+	// Finds the fastest route between coordinates in the supplied order
 	ServiceRoute = "route"
 
 	// Snaps a coordinate to the street network and returns the nearest n matches
@@ -56,30 +55,16 @@ const (
 	VersionFirst = "v1"
 )
 
-// Client object
-type Options struct {
-	// Url of osrm server with / on the end
-	Url url.URL `json:"url"`
-
-	// One of the following values:  route ,  nearest ,  table ,  match ,  trip ,  tile
-	Service string `json:"service"`
-
-	//	Version of the protocol implemented by the service
-	Version string `json:"version"`
-
-	// Mode of transportation, is determined statically by the Lua profile that is used to prepare the data using  osrm-extract
-	Profile string `json:"profile"`
-
-	// Timeout for request in seconds
-	RequestTimeout int `json:"request_timeout"`
+type OSRM interface {
+	Route(r *RouteRequest) (*OSRMResponse, error)
+	Table(r *TableRequest) (*OSRMResponse, error)
+	Match(r *MatchRequest) (*OSRMResponse, error)
+	Nearest(r *NearestRequest) (*OSRMResponse, error)
 }
 
-type UrlResponder interface {
-	Url() (*url.URL, error)
-}
-
+// Finds the fastest route between coordinates in the supplied order
 type RouteRequest struct {
-	//coordinates
+	// coordinates
 	Coordinates geo.PointSet `json:"coordinates"`
 
 	// Returned route steps for each route leg
@@ -99,4 +84,30 @@ type RouteRequest struct {
 
 	// Forces the route to keep going straight at waypoints constraining uturns there even if it would be faster. Default value depends on the profile.
 	ContinueStraight *string `json:"continue_straight"`
+}
+
+// Snaps a coordinate to the street network and returns the nearest n matches.
+type NearestRequest struct {
+	// coordinates
+	Coordinates geo.Point `json:"coordinates"`
+
+	// Number of nearest segments that should be returned
+	Number *int `json:"number"`
+}
+
+// Computes the duration of the fastest route between all pairs of supplied coordinates
+type TableRequest struct {
+	// coordinates
+	Coordinates geo.PointSet `json:"coordinates"`
+
+	// Use location with given index as source.
+	Sources *[]int `json:"sources"`
+
+	// Use location with given index as destination.
+	Destinations *[]int `json:"destinations"`
+}
+
+type MatchRequest struct {
+	// coordinates
+	Coordinates geo.PointSet `json:"coordinates"`
 }

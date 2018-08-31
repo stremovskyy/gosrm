@@ -20,74 +20,106 @@
 package gosrm
 
 type OSRMResponse struct {
-	Code      string     `json:"code"`
-	Message   string     `json:"message"`
-	Routes    []Route    `json:"routes"`
-	Waypoints []Waypoint `json:"waypoints"`
+	Code         string       `json:"code,omitempty"`
+	Message      string       `json:"message,omitempty"`
+	Routes       []Route      `json:"routes,omitempty"`
+	Waypoints    []Waypoint   `json:"waypoints,omitempty"`
+	Durations    [][]float64  `json:"durations,omitempty"`    // Table Request
+	Destinations Destinations `json:"destinations,omitempty"` // Table Request
+	Sources      Sources      `json:"sources,omitempty"`      // For Table Request
+	Trips        Trips        `json:"trips,omitempty"`        // For Match Request
+}
+
+// For Match Request
+type Trips []struct {
+	Geometry   string  `json:"geometry,omitempty"`
+	Legs       []Leg   `json:"legs,omitempty"`
+	Distance   float64 `json:"distance,omitempty"`
+	Duration   float64 `json:"duration,omitempty"`
+	WeightName string  `json:"weight_name,omitempty"`
+	Weight     float64 `json:"weight,omitempty"`
+}
+
+// For Table Request
+type Sources []struct {
+	Hint     string    `json:"hint,omitempty"`
+	Name     string    `json:"name,omitempty"`
+	Location []float64 `json:"location,omitempty"`
+}
+
+// For Table Request
+type Destinations []struct {
+	Hint     string    `json:"hint,omitempty"`
+	Name     string    `json:"name,omitempty"`
+	Location []float64 `json:"location,omitempty"`
 }
 
 type Waypoint struct {
-	Hint     string    `json:"hint"`
-	Name     string    `json:"name"`
-	Location []float64 `json:"location"`
+	Hint          string    `json:"hint,omitempty"`
+	Name          string    `json:"name,omitempty"`
+	Location      []float64 `json:"location,omitempty"`
+	Nodes         []int     `json:"nodes,omitempty"`
+	Distance      float64   `json:"distance,omitempty"`       // Nearest Request
+	WaypointIndex int       `json:"waypoint_index,omitempty"` // Match Request
+	TripsIndex    int       `json:"trips_index,omitempty"`    // Match Request
 }
 
 type Route struct {
-	Geometry   string  `json:"geometry"`
-	Legs       []Leg   `json:"legs"`
-	Distance   float64 `json:"distance"`
-	Duration   float64 `json:"duration"`
-	WeightName string  `json:"weight_name"`
-	Weight     float64 `json:"weight"`
+	Geometry   string  `json:"geometry,omitempty"`
+	Legs       []Leg   `json:"legs,omitempty"`
+	Distance   float64 `json:"distance,omitempty"`
+	Duration   float64 `json:"duration,omitempty"`
+	WeightName string  `json:"weight_name,omitempty"`
+	Weight     float64 `json:"weight,omitempty"`
 }
 
 type Leg struct {
-	Annotation Annotation `json:"annotation"`
-	Steps      []Step     `json:"steps"`
-	Distance   float64    `json:"distance"`
-	Duration   float64    `json:"duration"`
-	Summary    string     `json:"summary"`
-	Weight     float64    `json:"weight"`
+	Annotation Annotation `json:"annotation,omitempty"`
+	Steps      []Step     `json:"steps,omitempty"`
+	Distance   float64    `json:"distance,omitempty"`
+	Duration   float64    `json:"duration,omitempty"`
+	Summary    string     `json:"summary,omitempty"`
+	Weight     float64    `json:"weight,omitempty"`
 }
 
 type Annotation struct {
-	Metadata    Metadata      `json:"metadata"`
-	Nodes       []interface{} `json:"nodes"`
-	Datasources []int         `json:"datasources"`
-	Speed       []float64     `json:"speed"`
-	Weight      []float64     `json:"weight"`
-	Duration    []float64     `json:"duration"`
-	Distance    []float64     `json:"distance"`
+	Metadata    Metadata      `json:"metadata,omitempty"`
+	Nodes       []interface{} `json:"nodes,omitempty"`
+	Datasources []int         `json:"datasources,omitempty"`
+	Speed       []float64     `json:"speed,omitempty"`
+	Weight      []float64     `json:"weight,omitempty"`
+	Duration    []float64     `json:"duration,omitempty"`
+	Distance    []float64     `json:"distance,omitempty"`
 }
 
 type Metadata struct {
-	DatasourceNames []string `json:"datasource_names"`
+	DatasourceNames []string `json:"datasource_names,omitempty"`
 }
 
 type Step struct {
-	Intersections []Intersection `json:"intersections"`
-	DrivingSide   string         `json:"driving_side"`
-	Geometry      string         `json:"geometry"`
-	Mode          string         `json:"mode"`
-	Duration      float64        `json:"duration"`
-	Maneuver      Maneuver       `json:"maneuver"`
-	Weight        float64        `json:"weight"`
-	Distance      float64        `json:"distance"`
-	Name          string         `json:"name"`
-	Ref           string         `json:"ref,omitempty"`
+	Intersections []Intersection `json:"intersections,omitempty"`
+	DrivingSide   string         `json:"driving_side,omitempty"`
+	Geometry      string         `json:"geometry,omitempty"`
+	Mode          string         `json:"mode,omitempty"`
+	Duration      float64        `json:"duration,omitempty"`
+	Maneuver      Maneuver       `json:"maneuver,omitempty"`
+	Weight        float64        `json:"weight,omitempty"`
+	Distance      float64        `json:"distance,omitempty"`
+	Name          string         `json:"name,omitempty"`
+	Ref           string         `json:"ref,omitempty,omitempty"`
 }
 
 type Intersection struct {
-	Out      int       `json:"out"`
-	Entry    []bool    `json:"entry"`
-	Bearings []int     `json:"bearings"`
-	Location []float64 `json:"location"`
+	Out      int       `json:"out,omitempty"`
+	Entry    []bool    `json:"entry,omitempty"`
+	Bearings []int     `json:"bearings,omitempty"`
+	Location []float64 `json:"location,omitempty"`
 }
 
 type Maneuver struct {
-	BearingAfter  int       `json:"bearing_after"`
-	Type          string    `json:"type"`
-	Modifier      string    `json:"modifier"`
-	BearingBefore int       `json:"bearing_before"`
-	Location      []float64 `json:"location"`
+	BearingAfter  int       `json:"bearing_after,omitempty"`
+	Type          string    `json:"type,omitempty"`
+	Modifier      string    `json:"modifier,omitempty"`
+	BearingBefore int       `json:"bearing_before,omitempty"`
+	Location      []float64 `json:"location,omitempty"`
 }
