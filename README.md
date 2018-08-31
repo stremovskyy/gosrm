@@ -40,7 +40,10 @@ func main() {
     	client := gosrm.NewClient(options)
     
     	routeRequest := &gosrm.RouteRequest{
-    		Coordinates: geo.PointSet{{36.232051849365234, 49.98765584451778}, {36.22089385986328, 50.03718650830641},},
+    		Coordinates: geo.PointSet{
+    			{36.232051849365234, 49.98765584451778},
+    			{36.22089385986328, 50.03718650830641},
+    	    },
     	}
     
     	response,err := client.Route(routeRequest)
