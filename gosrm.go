@@ -40,7 +40,7 @@ type RouteRequest struct {
 
 	// Search for alternative routes. Passing a number alternatives=n searches for up to  n alternative routes
 	// (n not working because it bool)
-	Alternatives *bool `json:"alternatives"`
+	Alternatives *string `json:"alternatives"`
 
 	// Returns additional metadata for each coordinate along the route geometry
 	Annotations *string `json:"annotations"`
