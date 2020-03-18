@@ -20,63 +20,12 @@
 package gosrm
 
 import (
-	"github.com/paulmach/go.geo"
+	"github.com/karmadon/gosrm/models"
 )
 
 type OSRM interface {
-	Route(r *RouteRequest) (*OSRMResponse, error)
-	Table(r *TableRequest) (*OSRMResponse, error)
-	Match(r *MatchRequest) (*OSRMResponse, error)
-	Nearest(r *NearestRequest) (*OSRMResponse, error)
-}
-
-// Finds the fastest route between coordinates in the supplied order
-type RouteRequest struct {
-	// coordinates
-	Coordinates geo.PointSet `json:"coordinates"`
-
-	// Returned route steps for each route leg
-	Steps *bool `json:"steps"`
-
-	// Search for alternative routes. Passing a number alternatives=n searches for up to  n alternative routes
-	// (n not working because it bool)
-	Alternatives *string `json:"alternatives"`
-
-	// Returns additional metadata for each coordinate along the route geometry
-	Annotations *string `json:"annotations"`
-
-	// Returned route geometry format (influences overview and per step)
-	Geometries *string `json:"geometries"`
-
-	// Add overview geometry either full, simplified according to highest zoom level it could be display on, or not at all.
-	Overview *string `json:"overview"`
-
-	// Forces the route to keep going straight at waypoints constraining uturns there even if it would be faster. Default value depends on the profile.
-	ContinueStraight *string `json:"continue_straight"`
-}
-
-// Snaps a coordinate to the street network and returns the nearest n matches.
-type NearestRequest struct {
-	// coordinates
-	Coordinates geo.Point `json:"coordinates"`
-
-	// Number of nearest segments that should be returned
-	Number *int `json:"number"`
-}
-
-// Computes the duration of the fastest route between all pairs of supplied coordinates
-type TableRequest struct {
-	// coordinates
-	Coordinates geo.PointSet `json:"coordinates"`
-
-	// Use location with given index as source.
-	Sources *[]int `json:"sources"`
-
-	// Use location with given index as destination.
-	Destinations *[]int `json:"destinations"`
-}
-
-type MatchRequest struct {
-	// coordinates
-	Coordinates geo.PointSet `json:"coordinates"`
+	Route(r *models.RouteRequest) (*models.OSRMResponse, error)
+	Table(r *models.TableRequest) (*models.OSRMResponse, error)
+	Match(r *models.MatchRequest) (*models.OSRMResponse, error)
+	Nearest(r *models.NearestRequest) (*models.OSRMResponse, error)
 }

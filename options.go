@@ -16,6 +16,11 @@ type Options struct {
 	// Mode of transportation, is determined statically by the Lua profile that is used to prepare the data using  osrm-extract
 	Profile string `json:"profile"`
 
+	GenerateHints bool `json:"generate_hints"`
+
 	// Timeout for request in seconds
 	RequestTimeout int `json:"request_timeout"`
+
+	// if need debug you should turn this on
+	Debug bool `json:"debug"`
 }

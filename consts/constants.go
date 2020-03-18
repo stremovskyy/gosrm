@@ -1,6 +1,43 @@
-package gosrm
+package consts
+
+import "time"
 
 const (
+	ClientMaxIdleConnections  = 1024
+	ClientTLSHandshakeTimeout = 1 * time.Second
+)
+
+// Return the requested table or tables in response
+type TableAnnotation string
+
+const (
+	// default
+	TableAnnotationDuration         TableAnnotation = "duration"
+	TableAnnotationDistance         TableAnnotation = "distance"
+	TableAnnotationDurationDistance TableAnnotation = "duration,distance"
+)
+
+func (a *TableAnnotation) String() string {
+	return string(*a)
+}
+
+// Return the requested table or tables in response
+type FallbackCoordinate string
+
+const (
+	// default
+	FallbackCoordinateInput   FallbackCoordinate = "input"
+	FallbackCoordinateSnapped FallbackCoordinate = "snapped"
+)
+
+func (a *FallbackCoordinate) String() string {
+	return string(*a)
+}
+
+const (
+	// Lib Version
+	Version = "0.1.0"
+
 	// Finds the fastest route between coordinates in the supplied order
 	ServiceRoute = "route"
 
@@ -19,8 +56,8 @@ const (
 	// This service generates Mapbox Vector Tiles that can be viewed with a vector-tile capable slippy-map viewer.
 	ServiceTile = "tile"
 
-	// Standart profile
-	ProfileDrivig = "driving"
+	// Standard profile
+	ProfileDriving = "driving"
 
 	// Car profile
 	ProfileCar = "car"

@@ -20,16 +20,10 @@
 package gosrm
 
 import (
-	"encoding/json"
-	"errors"
-	"github.com/paulmach/go.geo"
-	"io"
-	"io/ioutil"
 	"net/http"
-	"net/url"
-	"strconv"
-	"strings"
 	"time"
+
+	"github.com/karmadon/gosrm/consts"
 )
 
 // Osrm Client Object
@@ -38,129 +32,19 @@ type OsrmClient struct {
 	Options    *Options
 }
 
-func (c *OsrmClient) Table(r *TableRequest) (*OSRMResponse, error) {
-	panic("implement me")
-}
-
-func (c *OsrmClient) Match(r *MatchRequest) (*OSRMResponse, error) {
-	panic("implement me")
-}
-
-func (c *OsrmClient) Nearest(r *NearestRequest) (*OSRMResponse, error) {
-	panic("implement me")
-}
-
-func (c *OsrmClient) Route(r *RouteRequest) (*OSRMResponse, error) {
-	Url, err := r.Url(*c)
-	if err != nil {
-		return nil, err
-	}
-
-	req := &http.Request{
-		Method: http.MethodGet,
-		URL:    Url,
-		Header: http.Header{
-			"User-Agent": {"GOSRM/1.0.0"},
-			"Accept":     {"application/json"},
-		},
-	}
-
-	resp, err := c.httpClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-
-	raw, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	io.Copy(ioutil.Discard, resp.Body)
-	defer resp.Body.Close()
-
-	routeResponse := &OSRMResponse{}
-	if err := json.Unmarshal(raw, &routeResponse); err != nil {
-		return nil, err
-	}
-
-	if routeResponse.Code != CodeOK {
-
-		i, ok := RespCode[routeResponse.Code]
-		if !ok {
-			i = routeResponse.Message
-		}
-
-		return routeResponse, errors.New(i)
-	}
-
-	return routeResponse, nil
-}
-
 // NewClient creates a client with options
 func NewClient(options *Options) *OsrmClient {
-	timeout := time.Duration(time.Duration(options.RequestTimeout) * time.Second)
+	timeout := time.Duration(options.RequestTimeout) * time.Second
 
-	t := &http.Transport{
-		MaxIdleConnsPerHost: 1024,
-		TLSHandshakeTimeout: 0 * time.Second,
+	transport := &http.Transport{
+		MaxIdleConnsPerHost: consts.ClientMaxIdleConnections,
+		TLSHandshakeTimeout: consts.ClientTLSHandshakeTimeout,
 	}
 
 	c := http.Client{
-		Transport: t,
+		Transport: transport,
 		Timeout:   timeout,
 	}
 
 	return &OsrmClient{&c, options}
-}
-
-// Gets Base url from options
-func (o *Options) BaseUrl() (*url.URL, error) {
-	u, err := url.Parse(o.Url.Host)
-	if err != nil {
-		return nil, errors.New("gosrm: bad server Url string")
-	}
-
-	u.Path += strings.Join([]string{
-		o.Service,
-		o.Version,
-		o.Profile,
-	}, "/")
-
-	return u, nil
-}
-
-// URL generates a url for OSRM request
-func (r RouteRequest) Url(c OsrmClient) (*url.URL, error) {
-	Url, err := c.Options.BaseUrl()
-	if err != nil {
-		return nil, err
-	}
-
-	path := geo.Path{r.Coordinates}
-
-	Url.Path += "/" + "polyline(" + url.PathEscape(path.Encode()) + ")"
-
-	parameters := url.Values{}
-
-	if r.Steps != nil {
-		parameters.Add("steps", strconv.FormatBool(*r.Steps))
-	}
-	if r.Alternatives != nil {
-		parameters.Add("alternatives", *r.Alternatives)
-	}
-	if r.Annotations != nil {
-		parameters.Add("annotations", *r.Annotations)
-	}
-	if r.Geometries != nil {
-		parameters.Add("geometries", *r.Geometries)
-	}
-	if r.ContinueStraight != nil {
-		parameters.Add("continue_straight", *r.ContinueStraight)
-	}
-	if r.Overview != nil {
-		parameters.Add("overview", *r.Overview)
-	}
-
-	Url.RawQuery = parameters.Encode()
-
-	return Url, nil
 }

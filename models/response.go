@@ -17,7 +17,7 @@
  * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package gosrm
+package models
 
 // Main Response object
 type OSRMResponse struct {
@@ -31,6 +31,7 @@ type OSRMResponse struct {
 	Waypoints []Waypoint `json:"waypoints,omitempty"`
 
 	Durations    [][]float64   `json:"durations,omitempty"`    // Only for Table Request
+	Distances    [][]float64   `json:"distances,omitempty"`    // Only for Table Request
 	Destinations []Destination `json:"destinations,omitempty"` // Only for Table Request
 	Sources      []Source      `json:"sources,omitempty"`      // Only for Table Request
 	Trips        []Trip        `json:"trips,omitempty"`        // Only for Match Request

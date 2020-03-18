@@ -22,8 +22,8 @@ package gosrm
 // Errors which could be returned from OSRM Server
 var RespCode = map[string]string{
 	"NoRoute":        "No route found",
-	"NoTable":        "No route found.",
-	"NoMatch":        "No matchings found.",
+	"NoTable":        "No route found in table method.",
+	"NoMatch":        "No matching found.",
 	"NoTrips":        "No trips found because input coordinates are not connected.",
 	"NotImplemented": "This request is not supported",
 	"InvalidUrl":     "URL string is invalid",
@@ -31,7 +31,7 @@ var RespCode = map[string]string{
 	"InvalidService": "Service name is invalid.",
 	"InvalidVersion": "OSRM Version is not found.",
 	"InvalidOptions": "Options are invalid.",
-	"InvalidQuery":   "The query string is synctactically malformed.",
+	"InvalidQuery":   "The query string is syntactically malformed.",
 	"InvalidValue":   "The successfully parsed query parameters are invalid.",
 	"NoSegment":      "One of the supplied input coordinates could not snap to street segment.",
 	"TooBig":         "The request size violates one of the service specific request size restrictions",
