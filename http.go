@@ -1,6 +1,7 @@
 package gosrm
 
 import (
+	"compress/gzip"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -24,13 +25,28 @@ func (c *OsrmClient) http(Url *url.URL) (*OSRMResponse, error) {
 		fmt.Printf("[GOSRM][URL]: %s\n", Url.String())
 	}
 
+	req.Header.Add("Accept-Encoding", "gzip")
+
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
 		return nil, NewGOSRMError(Url, err, nil)
 	}
 	defer resp.Body.Close()
 
-	raw, err := ioutil.ReadAll(resp.Body)
+	var reader io.ReadCloser
+
+	switch resp.Header.Get("Content-Encoding") {
+	case "gzip":
+		reader, err = gzip.NewReader(resp.Body)
+		if err != nil {
+			return nil, NewGOSRMError(Url, err, nil)
+		}
+		defer reader.Close()
+	default:
+		reader = resp.Body
+	}
+
+	raw, err := ioutil.ReadAll(reader)
 	if err != nil {
 		return nil, NewGOSRMError(Url, err, &raw)
 	}
