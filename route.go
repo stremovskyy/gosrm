@@ -43,7 +43,7 @@ func (c *OsrmClient) Route(r *models.RouteRequest) (*models.OSRMResponse, error)
 
 // URL generates a url for OSRM request
 func routeUrl(r *models.RouteRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
-	path := geo.Path{r.Coordinates}
+	path := geo.Path{PointSet: r.Coordinates}
 
 	baseURL.Path += "/" + "polyline(" + url.PathEscape(path.Encode()) + ")"
 

@@ -44,7 +44,7 @@ func (c *OsrmClient) Table(t *models.TableRequest) (*models.OSRMResponse, error)
 
 // URL generates a url for OSRM request
 func tableUrl(r *models.TableRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
-	path := geo.Path{r.Coordinates}
+	path := geo.Path{PointSet: r.Coordinates}
 	baseURL.Path += "/" + "polyline(" + url.PathEscape(path.Encode()) + ")"
 
 	parameters := url.Values{}
