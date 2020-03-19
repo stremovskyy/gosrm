@@ -19,7 +19,6 @@ func main() {
 		Version:        consts.VersionFirst,
 		Profile:        consts.ProfileDriving,
 		RequestTimeout: 5,
-		Debug:          true,
 	}
 
 	client := gosrm.NewClient(options)

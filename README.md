@@ -36,7 +36,6 @@ func main() {
         Version:        consts.VersionFirst,
         Profile:        consts.ProfileDriving,
         RequestTimeout: 5,
-        Debug:true,
     }
 
     client := gosrm.NewClient(options)
@@ -71,7 +70,6 @@ func main() {
 		Version:        consts.VersionFirst,
 		Profile:        consts.ProfileDriving,
 		RequestTimeout: 5,
-		Debug:          true,
 	}
 
 	client := gosrm.NewClient(options)
@@ -101,4 +99,4 @@ func main() {
 
 ### Full Example
 
-See `examples/main.go`
+See `examples` folder
