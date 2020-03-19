@@ -1,8 +1,6 @@
 package gosrm
 
 import (
-	"encoding/json"
-	"errors"
 	"net/url"
 	"strconv"
 	"strings"
@@ -16,30 +14,10 @@ func (c *OsrmClient) Table(t *models.TableRequest) (*models.OSRMResponse, error)
 	baseURL, err := c.Options.BaseUrl()
 	Url, err := tableUrl(t, baseURL, c.Options.GenerateHints)
 	if err != nil {
-		return nil, err
+		return nil, NewGOSRMError(nil, err, nil)
 	}
 
-	raw, err := c.http(Url)
-	if err != nil {
-		return nil, err
-	}
-
-	response := &models.OSRMResponse{}
-	if err := json.Unmarshal(raw, &response); err != nil {
-		return nil, err
-	}
-
-	if response.Code != CodeOK {
-
-		i, ok := RespCode[response.Code]
-		if !ok {
-			i = response.Message
-		}
-
-		return response, errors.New(i)
-	}
-
-	return response, nil
+	return c.http(Url)
 }
 
 // URL generates a url for OSRM request

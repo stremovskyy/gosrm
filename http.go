@@ -1,6 +1,8 @@
 package gosrm
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -8,9 +10,10 @@ import (
 	"net/url"
 
 	"github.com/karmadon/gosrm/consts"
+	"github.com/karmadon/gosrm/models"
 )
 
-func (c *OsrmClient) http(Url *url.URL) ([]byte, error) {
+func (c *OsrmClient) http(Url *url.URL) (*models.OSRMResponse, error) {
 	req := &http.Request{
 		Method: http.MethodGet,
 		URL:    Url,
@@ -26,21 +29,39 @@ func (c *OsrmClient) http(Url *url.URL) ([]byte, error) {
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		return nil, err
+		return nil, NewGOSRMError(Url, err, nil)
 	}
 	defer resp.Body.Close()
 
 	raw, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, NewGOSRMError(Url, err, &raw)
 	}
 	_, err = io.Copy(ioutil.Discard, resp.Body)
 	if err != nil {
-		return nil, err
+		return nil, NewGOSRMError(Url, err, &raw)
 	}
 
 	if c.Options.Debug {
 		fmt.Printf("[GOSRM][RESPONCE]: %s\n", raw)
 	}
-	return raw, nil
+
+	response := &models.OSRMResponse{}
+	if err := json.Unmarshal(raw, &response); err != nil {
+		return nil, NewGOSRMError(Url, err, &raw)
+	}
+
+	if response.Code != CodeOK {
+
+		i, ok := RespCode[response.Code]
+		if !ok {
+			i = response.Message
+		}
+
+		e := errors.New(i)
+
+		return response, NewGOSRMError(Url, e, &raw)
+	}
+
+	return response, nil
 }

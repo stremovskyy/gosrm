@@ -19,6 +19,8 @@
 
 package gosrm
 
+import "net/url"
+
 // Errors which could be returned from OSRM Server
 var RespCode = map[string]string{
 	"NoRoute":        "No route found",
@@ -38,3 +40,17 @@ var RespCode = map[string]string{
 }
 
 const CodeOK = "Ok"
+
+type GOSRMError struct {
+	Url         *url.URL
+	Err         error
+	RawResponse *[]byte
+}
+
+func (e *GOSRMError) Error() string {
+	return "[GOSRM][ERROR]: " + e.Err.Error()
+}
+
+func NewGOSRMError(url *url.URL, err error, rawResponse *[]byte) *GOSRMError {
+	return &GOSRMError{Url: url, Err: err, RawResponse: rawResponse}
+}
