@@ -17,7 +17,7 @@
  * IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-package models
+package gosrm
 
 // Main Response object
 type OSRMResponse struct {

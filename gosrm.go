@@ -19,13 +19,9 @@
 
 package gosrm
 
-import (
-	"github.com/karmadon/gosrm/models"
-)
-
 type OSRM interface {
-	Route(r *models.RouteRequest) (*models.OSRMResponse, error)
-	Table(r *models.TableRequest) (*models.OSRMResponse, error)
-	Match(r *models.MatchRequest) (*models.OSRMResponse, error)
-	Nearest(r *models.NearestRequest) (*models.OSRMResponse, error)
+	Route(r *RouteRequest) (*OSRMResponse, error)
+	Table(r *TableRequest) (*OSRMResponse, error)
+	Match(r *MatchRequest) (*OSRMResponse, error)
+	Nearest(r *NearestRequest) (*OSRMResponse, error)
 }

@@ -1,4 +1,4 @@
-package models
+package gosrm
 
 import (
 	geo "github.com/paulmach/go.geo"

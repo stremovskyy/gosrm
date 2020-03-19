@@ -1,7 +1,5 @@
 package gosrm
 
-import "github.com/karmadon/gosrm/models"
-
-func (c *OsrmClient) Nearest(_ *models.NearestRequest) (*models.OSRMResponse, error) {
+func (c *OsrmClient) Nearest(_ *NearestRequest) (*OSRMResponse, error) {
 	panic("implement me")
 }

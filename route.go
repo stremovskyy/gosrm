@@ -5,11 +5,9 @@ import (
 	"strconv"
 
 	geo "github.com/paulmach/go.geo"
-
-	"github.com/karmadon/gosrm/models"
 )
 
-func (c *OsrmClient) Route(r *models.RouteRequest) (*models.OSRMResponse, error) {
+func (c *OsrmClient) Route(r *RouteRequest) (*OSRMResponse, error) {
 	baseURL, err := c.Options.BaseUrl()
 	Url, err := routeUrl(r, baseURL, c.Options.GenerateHints)
 	if err != nil {
@@ -20,7 +18,7 @@ func (c *OsrmClient) Route(r *models.RouteRequest) (*models.OSRMResponse, error)
 }
 
 // URL generates a url for OSRM request
-func routeUrl(r *models.RouteRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
+func routeUrl(r *RouteRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
 	path := geo.Path{PointSet: r.Coordinates}
 
 	baseURL.Path += "/" + "polyline(" + url.PathEscape(path.Encode()) + ")"

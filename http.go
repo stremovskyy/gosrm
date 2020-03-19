@@ -8,17 +8,14 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-
-	"github.com/karmadon/gosrm/consts"
-	"github.com/karmadon/gosrm/models"
 )
 
-func (c *OsrmClient) http(Url *url.URL) (*models.OSRMResponse, error) {
+func (c *OsrmClient) http(Url *url.URL) (*OSRMResponse, error) {
 	req := &http.Request{
 		Method: http.MethodGet,
 		URL:    Url,
 		Header: http.Header{
-			"User-Agent": {"GOSRM/" + consts.Version},
+			"User-Agent": {"GOSRM/" + Version},
 			"Accept":     {"application/json"},
 		},
 	}
@@ -46,7 +43,7 @@ func (c *OsrmClient) http(Url *url.URL) (*models.OSRMResponse, error) {
 		fmt.Printf("[GOSRM][RESPONCE]: %s\n", raw)
 	}
 
-	response := &models.OSRMResponse{}
+	response := &OSRMResponse{}
 	if err := json.Unmarshal(raw, &response); err != nil {
 		return nil, NewGOSRMError(Url, err, &raw)
 	}

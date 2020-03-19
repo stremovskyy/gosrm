@@ -6,11 +6,9 @@ import (
 	"strings"
 
 	geo "github.com/paulmach/go.geo"
-
-	"github.com/karmadon/gosrm/models"
 )
 
-func (c *OsrmClient) Table(t *models.TableRequest) (*models.OSRMResponse, error) {
+func (c *OsrmClient) Table(t *TableRequest) (*OSRMResponse, error) {
 	baseURL, err := c.Options.BaseUrl()
 	Url, err := tableUrl(t, baseURL, c.Options.GenerateHints)
 	if err != nil {
@@ -21,7 +19,7 @@ func (c *OsrmClient) Table(t *models.TableRequest) (*models.OSRMResponse, error)
 }
 
 // URL generates a url for OSRM request
-func tableUrl(r *models.TableRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
+func tableUrl(r *TableRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
 	path := geo.Path{PointSet: r.Coordinates}
 	baseURL.Path += "/" + "polyline(" + url.PathEscape(path.Encode()) + ")"
 

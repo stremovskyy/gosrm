@@ -22,8 +22,6 @@ package gosrm
 import (
 	"net/http"
 	"time"
-
-	"github.com/karmadon/gosrm/consts"
 )
 
 // Osrm Client Object
@@ -37,8 +35,8 @@ func NewClient(options *Options) *OsrmClient {
 	timeout := time.Duration(options.RequestTimeout) * time.Second
 
 	transport := &http.Transport{
-		MaxIdleConnsPerHost: consts.ClientMaxIdleConnections,
-		TLSHandshakeTimeout: consts.ClientTLSHandshakeTimeout,
+		MaxIdleConnsPerHost: ClientMaxIdleConnections,
+		TLSHandshakeTimeout: ClientTLSHandshakeTimeout,
 	}
 
 	c := http.Client{

@@ -7,17 +7,15 @@ import (
 	"github.com/paulmach/go.geo"
 
 	"github.com/karmadon/gosrm"
-	"github.com/karmadon/gosrm/consts"
-	"github.com/karmadon/gosrm/models"
 )
 
 func main() {
 
 	options := &gosrm.Options{
 		Url:            url.URL{Host: "https://router.project-osrm.org/"},
-		Service:        consts.ServiceTable,
-		Version:        consts.VersionFirst,
-		Profile:        consts.ProfileDriving,
+		Service:        gosrm.ServiceTable,
+		Version:        gosrm.VersionFirst,
+		Profile:        gosrm.ProfileDriving,
 		RequestTimeout: 5,
 	}
 
@@ -26,10 +24,10 @@ func main() {
 	sources := []int{1, 2}
 	destinations := []int{2, 1}
 
-	annotation := consts.TableAnnotationDurationDistance
+	annotation := gosrm.TableAnnotationDurationDistance
 	scaleFactor := 1.2
 
-	tableRequest := &models.TableRequest{
+	tableRequest := &gosrm.TableRequest{
 		Coordinates:  geo.PointSet{{36.232051849365234, 49.98765584451778}, {36.22089385986328, 50.03718650830641}},
 		Sources:      &sources,
 		Destinations: &destinations,
