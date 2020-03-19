@@ -1,5 +1,6 @@
 # GOSRM - GO Client for OSRM
 [![Build Status](https://travis-ci.org/Karmadon/gosrm.svg?branch=master)](https://travis-ci.org/Karmadon/gosrm)
+![Go](https://github.com/Karmadon/gosrm/workflows/Go/badge.svg?branch=master)
 [![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/karmadon/gosrm)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/karmadon/gosrm)](https://goreportcard.com/report/github.com/karmadon/gosrm)
@@ -23,10 +24,13 @@ go get github.com/karmadon/gosrm
 package main
 
 import (
-	"fmt"
-	"net/url"
-	"github.com/karmadon/gosrm"
-	"github.com/paulmach/go.geo"
+"fmt"
+"net/url"
+
+
+
+"github.com/karmadon/gosrm"
+"github.com/paulmach/go.geo"
 )
 
 func main() {
@@ -57,10 +61,13 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"net/url"
-	"github.com/karmadon/gosrm"
-	"github.com/paulmach/go.geo"
+"fmt"
+"net/url"
+
+
+
+"github.com/karmadon/gosrm"
+"github.com/paulmach/go.geo"
 )
 
 func main() {
