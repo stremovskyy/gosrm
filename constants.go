@@ -36,7 +36,7 @@ func (a *FallbackCoordinate) String() string {
 
 const (
 	// Lib Version
-	Version = "0.1.0"
+	Version = "0.1.4"
 
 	// Finds the fastest route between coordinates in the supplied order
 	ServiceRoute = "route"

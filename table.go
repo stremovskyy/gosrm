@@ -4,13 +4,12 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-
-	geo "github.com/paulmach/go.geo"
 )
 
 func (c *OsrmClient) Table(t *TableRequest) (*OSRMResponse, error) {
 	baseURL, err := c.Options.BaseUrl()
 	Url, err := tableUrl(t, baseURL, c.Options.GenerateHints)
+
 	if err != nil {
 		return nil, NewGOSRMError(nil, err, nil)
 	}
@@ -20,8 +19,13 @@ func (c *OsrmClient) Table(t *TableRequest) (*OSRMResponse, error) {
 
 // URL generates a url for OSRM request
 func tableUrl(r *TableRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
-	path := geo.Path{PointSet: r.Coordinates}
-	baseURL.Path += "/" + "polyline(" + url.PathEscape(path.Encode()) + ")"
+	locations := []string{}
+
+	for _, coordinate := range r.Coordinates {
+		locations = append(locations, strconv.FormatFloat(coordinate.Lng(), 'f', 9, 64)+","+strconv.FormatFloat(coordinate.Lat(), 'f', 9, 64))
+	}
+
+	baseURL.Path += "/" + strings.Join(locations, ";")
 
 	parameters := url.Values{}
 
@@ -34,7 +38,7 @@ func tableUrl(r *TableRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
 	if r.Sources != nil {
 		sources := ""
 
-		if len(*r.Sources) != len(r.Coordinates) {
+		if r.Sources != nil && len(*r.Sources) > 0 {
 			var t []string
 			for _, i := range *r.Sources {
 				t = append(t, strconv.Itoa(i))
@@ -44,13 +48,12 @@ func tableUrl(r *TableRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
 
 		if sources != "" {
 			parameters.Add("sources", sources)
-
 		}
 	}
 	if r.Destinations != nil {
 		destinations := ""
 
-		if len(*r.Destinations) != len(r.Coordinates) {
+		if r.Destinations != nil && len(*r.Destinations) > 0 {
 			var t []string
 			for _, i := range *r.Destinations {
 				t = append(t, strconv.Itoa(i))
