@@ -6,9 +6,9 @@ import (
 	"strings"
 )
 
-func (c *OsrmClient) Table(t *TableRequest) (*OSRMResponse, error) {
-	baseURL, err := c.Options.BaseUrl()
-	Url, err := tableUrl(t, baseURL, c.Options.GenerateHints)
+func (c *Client) Table(t *TableRequest) (*OSRMResponse, error) {
+	baseURL, err := c.options.BaseUrl()
+	Url, err := tableUrl(t, baseURL)
 
 	if err != nil {
 		return nil, NewGOSRMError(nil, err, nil)
@@ -18,7 +18,7 @@ func (c *OsrmClient) Table(t *TableRequest) (*OSRMResponse, error) {
 }
 
 // URL generates a url for OSRM request
-func tableUrl(r *TableRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
+func tableUrl(r *TableRequest, baseURL *url.URL) (*url.URL, error) {
 	locations := []string{}
 
 	for _, coordinate := range r.Coordinates {
@@ -29,7 +29,9 @@ func tableUrl(r *TableRequest, baseURL *url.URL, hints bool) (*url.URL, error) {
 
 	parameters := url.Values{}
 
-	parameters.Add("generate_hints", strconv.FormatBool(hints))
+	if r.GenerateHints != nil {
+		parameters.Add("generate_hints", strconv.FormatBool(*r.GenerateHints))
+	}
 
 	if r.Annotations != nil {
 		parameters.Add("annotations", r.Annotations.String())

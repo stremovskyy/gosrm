@@ -24,25 +24,43 @@ import (
 	"time"
 )
 
-// Osrm Client Object
-type OsrmClient struct {
+const (
+	clientMaxIdleConnectionsFallBack  = 1024
+	clientTLSHandshakeTimeoutFallBack = 1 * time.Second
+)
+
+// Client is an Osrm Client
+type Client struct {
 	httpClient *http.Client
-	Options    *Options
+	options    *Options
 }
 
 // NewClient creates a client with options
-func NewClient(options *Options) *OsrmClient {
-	timeout := time.Duration(options.RequestTimeout) * time.Second
+func NewClient(options *Options) *Client {
+	if options == nil {
+		panic("no client options provided")
+	}
+
+	maxIdleClients := clientMaxIdleConnectionsFallBack
+	tlsHandshakeTimeout := clientTLSHandshakeTimeoutFallBack
+
+	if options.ClientMaxIdleConnections != nil {
+		maxIdleClients = *options.ClientMaxIdleConnections
+	}
+
+	if options.ClientTLSHandshakeTimeout != nil {
+		tlsHandshakeTimeout = *options.ClientTLSHandshakeTimeout
+	}
 
 	transport := &http.Transport{
-		MaxIdleConnsPerHost: ClientMaxIdleConnections,
-		TLSHandshakeTimeout: ClientTLSHandshakeTimeout,
+		MaxIdleConnsPerHost: maxIdleClients,
+		TLSHandshakeTimeout: tlsHandshakeTimeout,
 	}
 
 	c := http.Client{
 		Transport: transport,
-		Timeout:   timeout,
+		Timeout:   time.Duration(options.RequestTimeout) * time.Second,
 	}
 
-	return &OsrmClient{&c, options}
+	return &Client{&c, options}
 }

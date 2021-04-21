@@ -1,5 +1,5 @@
 package gosrm
 
-func (c *OsrmClient) Match(_ *MatchRequest) (*OSRMResponse, error) {
+func (c *Client) Match(_ *MatchRequest) (*OSRMResponse, error) {
 	panic("implement me")
 }

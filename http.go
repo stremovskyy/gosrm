@@ -11,7 +11,7 @@ import (
 	"net/url"
 )
 
-func (c *OsrmClient) http(Url *url.URL) (*OSRMResponse, error) {
+func (c *Client) http(Url *url.URL) (*OSRMResponse, error) {
 	req := &http.Request{
 		Method: http.MethodGet,
 		URL:    Url,
@@ -21,11 +21,13 @@ func (c *OsrmClient) http(Url *url.URL) (*OSRMResponse, error) {
 		},
 	}
 
-	if c.Options.Debug {
+	if c.options.Debug {
 		fmt.Printf("[GOSRM][URL]: %s\n", Url.String())
 	}
 
-	req.Header.Add("Accept-Encoding", "gzip")
+	if c.options.UseGzip {
+		req.Header.Add("Accept-Encoding", "gzip")
+	}
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -55,7 +57,7 @@ func (c *OsrmClient) http(Url *url.URL) (*OSRMResponse, error) {
 		return nil, NewGOSRMError(Url, err, &raw)
 	}
 
-	if c.Options.Debug {
+	if c.options.Debug {
 		fmt.Printf("[GOSRM][RESPONCE]: %s\n", raw)
 	}
 

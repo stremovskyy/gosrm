@@ -21,8 +21,8 @@ func main() {
 
 	client := gosrm.NewClient(options)
 
-	sources := []int{1, 2}
-	destinations := []int{2, 1}
+	sources := []int{0, 1}
+	destinations := []int{1}
 
 	annotation := gosrm.TableAnnotationDurationDistance
 	scaleFactor := 1.2

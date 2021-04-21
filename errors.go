@@ -21,7 +21,7 @@ package gosrm
 
 import "net/url"
 
-// Errors which could be returned from OSRM Server
+// RespCode Errors which could be returned from OSRM Server
 var RespCode = map[string]string{
 	"NoRoute":        "No route found",
 	"NoTable":        "No route found in table method.",
@@ -32,7 +32,7 @@ var RespCode = map[string]string{
 	"Ok":             "All OK",
 	"InvalidService": "Service name is invalid.",
 	"InvalidVersion": "OSRM Version is not found.",
-	"InvalidOptions": "Options are invalid.",
+	"InvalidOptions": "options are invalid.",
 	"InvalidQuery":   "The query string is syntactically malformed.",
 	"InvalidValue":   "The successfully parsed query parameters are invalid.",
 	"NoSegment":      "One of the supplied input coordinates could not snap to street segment.",
@@ -41,16 +41,16 @@ var RespCode = map[string]string{
 
 const CodeOK = "Ok"
 
-type GOSRMError struct {
+type Error struct {
 	Url         *url.URL
 	Err         error
 	RawResponse *[]byte
 }
 
-func (e *GOSRMError) Error() string {
+func (e *Error) Error() string {
 	return "[GOSRM][ERROR]: " + e.Err.Error()
 }
 
-func NewGOSRMError(url *url.URL, err error, rawResponse *[]byte) *GOSRMError {
-	return &GOSRMError{Url: url, Err: err, RawResponse: rawResponse}
+func NewGOSRMError(url *url.URL, err error, rawResponse *[]byte) *Error {
+	return &Error{Url: url, Err: err, RawResponse: rawResponse}
 }

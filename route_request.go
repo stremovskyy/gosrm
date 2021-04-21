@@ -4,7 +4,7 @@ import (
 	geo "github.com/paulmach/go.geo"
 )
 
-// Finds the fastest route between coordinates in the supplied order
+// RouteRequest Finds the fastest route between coordinates in the supplied order
 type RouteRequest struct {
 	// coordinates
 	Coordinates geo.PointSet `json:"coordinates"`
@@ -27,4 +27,7 @@ type RouteRequest struct {
 
 	// Forces the route to keep going straight at waypoints constraining uturns there even if it would be faster. Default value depends on the profile.
 	ContinueStraight *string `json:"continue_straight"`
+
+	// Adds a Hint to the response which can be used in subsequent requests
+	GenerateHints *bool `json:"generate_hints"`
 }

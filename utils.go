@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// Gets Base url from options
+// BaseUrl Gets Base url from options
 func (o *Options) BaseUrl() (*url.URL, error) {
 	u, err := url.Parse(o.Url.Host)
 	if err != nil {
