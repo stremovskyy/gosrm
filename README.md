@@ -1,9 +1,9 @@
 # GOSRM - GO Client for OSRM
-[![Build Status](https://travis-ci.org/Karmadon/gosrm.svg?branch=master)](https://travis-ci.org/Karmadon/gosrm)
-![Go](https://github.com/Karmadon/gosrm/workflows/Go/badge.svg?branch=master)
-[![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/karmadon/gosrm)
+[![Build Status](https://travis-ci.org/stremovskyy/gosrm.svg?branch=master)](https://travis-ci.org/stremovskyy/gosrm)
+![Go](https://github.com/stremovskyy/gosrm/workflows/Go/badge.svg?branch=master)
+[![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat-square)](https://godoc.org/github.com/stremovskyy/gosrm)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square)](LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/karmadon/gosrm)](https://goreportcard.com/report/github.com/karmadon/gosrm)
+[![Go Report Card](https://goreportcard.com/badge/github.com/stremovskyy/gosrm)](https://goreportcard.com/report/github.com/stremovskyy/gosrm)
 
 Advanced OSRM client for golang.
 
@@ -14,23 +14,23 @@ Advanced OSRM client for golang.
 ## Installation
 
 ```bash
-go get github.com/karmadon/gosrm
+go get github.com/stremovskyy/gosrm
 ```
 
 ## Quick Start
 
 #### Route Service
+
 ```go
 package main
 
 import (
 "fmt"
-"net/url"
+	"net/url"
 
 
-
-"github.com/karmadon/gosrm"
 "github.com/paulmach/go.geo"
+"github.com/stremovskyy/gosrm"
 )
 
 func main() {
@@ -57,17 +57,16 @@ func main() {
 }
 ```
 #### Table Service
+
 ```go
 package main
 
 import (
-"fmt"
-"net/url"
+	"fmt"
+	"net/url"
 
-
-
-"github.com/karmadon/gosrm"
-"github.com/paulmach/go.geo"
+	"github.com/paulmach/go.geo"
+	"github.com/stremovskyy/gosrm"
 )
 
 func main() {

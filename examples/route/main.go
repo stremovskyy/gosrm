@@ -2,11 +2,10 @@ package main
 
 import (
 	"fmt"
+	geo "github.com/paulmach/go.geo"
 	"net/url"
 
-	"github.com/paulmach/go.geo"
-
-	"github.com/karmadon/gosrm"
+	"github.com/stremovskyy/gosrm"
 )
 
 func main() {
