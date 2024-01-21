@@ -20,47 +20,110 @@
 package gosrm
 
 import (
+	"log"
 	"net/http"
+	"net/url"
 	"time"
 )
 
 const (
-	clientMaxIdleConnectionsFallBack  = 1024
-	clientTLSHandshakeTimeoutFallBack = 1 * time.Second
+	defaultMaxIdleConnections  = 1024
+	defaultTLSHandshakeTimeout = 1 * time.Second
 )
 
-// Client is an Osrm Client
-type Client struct {
+// Client represents an OSRM HTTP client.
+type osrmClient struct {
 	httpClient *http.Client
+	baseURL    string
+	headers    http.Header
+	logger     *log.Logger
 	options    *Options
+
+	profile *string
 }
 
-// NewClient creates a client with options
-func NewClient(options *Options) *Client {
+func (c *osrmClient) SetOptions(options *Options) {
+	c.options = options
+}
+
+func (c *osrmClient) ForProfile(profile string) OsrmClient {
+	newClient := *c
+
+	newClient.profile = &profile
+
+	return &newClient
+}
+
+func (c *osrmClient) Debug() OsrmClient {
+	newClient := *c
+
+	newClient.logger = log.New(log.Writer(), "GOSRM DEBUG: ", log.Ldate|log.Ltime|log.Lshortfile)
+	newClient.options.Debug = true
+
+	return &newClient
+}
+
+// NewClient creates a new OSRM Client with the provided options.
+// If options is nil, default values are used.
+func NewClient(options *Options) OsrmClient {
 	if options == nil {
-		panic("no client options provided")
+		options = NewDefaultOptions()
+		options.Logger.Println("Using default options")
 	}
 
-	maxIdleClients := clientMaxIdleConnectionsFallBack
-	tlsHandshakeTimeout := clientTLSHandshakeTimeoutFallBack
-
+	maxIdleConnections := defaultMaxIdleConnections
 	if options.ClientMaxIdleConnections != nil {
-		maxIdleClients = *options.ClientMaxIdleConnections
+		maxIdleConnections = *options.ClientMaxIdleConnections
 	}
 
+	tlsHandshakeTimeout := defaultTLSHandshakeTimeout
 	if options.ClientTLSHandshakeTimeout != nil {
 		tlsHandshakeTimeout = *options.ClientTLSHandshakeTimeout
 	}
 
 	transport := &http.Transport{
-		MaxIdleConnsPerHost: maxIdleClients,
+		MaxIdleConnsPerHost: maxIdleConnections,
 		TLSHandshakeTimeout: tlsHandshakeTimeout,
 	}
 
-	c := http.Client{
+	client := http.Client{
 		Transport: transport,
 		Timeout:   time.Duration(options.RequestTimeout) * time.Second,
 	}
 
-	return &Client{&c, options}
+	headers := make(http.Header)
+	for key, value := range options.Headers {
+		headers.Set(key, value)
+	}
+
+	if options.Debug {
+		log.SetOutput(log.Writer())
+		log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	}
+
+	return &osrmClient{
+		httpClient: &client,
+		baseURL:    options.BaseURL.String(),
+		headers:    headers,
+		logger:     options.Logger,
+		options:    options,
+	}
+}
+
+func NewDefaultClient() OsrmClient {
+	return NewClient(NewDefaultOptions())
+}
+
+func (c *osrmClient) baseUrlForService(service string) *url.URL {
+	u := c.options.BaseURL
+
+	u.Path += service + "/" + VersionFirst
+
+	if c.profile != nil {
+		u.Path += "/" + *c.profile
+	} else {
+		u.Path += "/" + ProfileCar
+	}
+
+	return &u
 }

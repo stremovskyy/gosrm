@@ -1,5 +1,5 @@
 package gosrm
 
-func (c *Client) Nearest(_ *NearestRequest) (*OSRMResponse, error) {
+func (c *osrmClient) Nearest(_ *NearestRequest) (*OSRMResponse, error) {
 	panic("implement me")
 }

@@ -2,52 +2,41 @@ package gosrm
 
 import (
 	"net/url"
-	"strconv"
 
 	geo "github.com/paulmach/go.geo"
 )
 
-func (c *Client) Route(r *RouteRequest) (*OSRMResponse, error) {
-	baseURL, err := c.options.BaseUrl()
-	Url, err := routeUrl(r, baseURL)
+func (c *osrmClient) Route(r *RouteRequest) (*OSRMResponse, error) {
+	Url, err := routeUrl(r, c.baseUrlForService(ServiceRoute))
 	if err != nil {
 		return nil, NewGOSRMError(nil, err, nil)
 	}
 
-	return c.http(Url)
+	return c.doRequest(Url)
 }
 
 // URL generates a url for OSRM request
 func routeUrl(r *RouteRequest, baseURL *url.URL) (*url.URL, error) {
+	newURL := *baseURL
+
 	path := geo.Path{PointSet: r.Coordinates}
+	encodedPath := path.Encode()
 
-	baseURL.Path += "/" + "polyline(" + url.PathEscape(path.Encode()) + ")"
+	encodedPolyline := "polyline(" + url.PathEscape(encodedPath) + ")"
+	newURL.Path = newURL.Path + "/" + encodedPolyline
 
+	// Initialize and populate query parameters
 	parameters := url.Values{}
+	addOptionalBoolParam(parameters, "generate_hints", r.GenerateHints)
+	addOptionalBoolParam(parameters, "steps", r.Steps)
+	addOptionalStringParam(parameters, "alternatives", r.Alternatives)
+	addOptionalStringParam(parameters, "annotations", r.Annotations)
+	addOptionalStringParam(parameters, "geometries", r.Geometries)
+	addOptionalStringParam(parameters, "continue_straight", r.ContinueStraight)
+	addOptionalStringParam(parameters, "overview", r.Overview)
 
-	if r.GenerateHints != nil {
-		parameters.Add("generate_hints", strconv.FormatBool(*r.GenerateHints))
-	}
-	if r.Steps != nil {
-		parameters.Add("steps", strconv.FormatBool(*r.Steps))
-	}
-	if r.Alternatives != nil {
-		parameters.Add("alternatives", *r.Alternatives)
-	}
-	if r.Annotations != nil {
-		parameters.Add("annotations", *r.Annotations)
-	}
-	if r.Geometries != nil {
-		parameters.Add("geometries", *r.Geometries)
-	}
-	if r.ContinueStraight != nil {
-		parameters.Add("continue_straight", *r.ContinueStraight)
-	}
-	if r.Overview != nil {
-		parameters.Add("overview", *r.Overview)
-	}
+	// Assign the encoded query parameters to the URL
+	newURL.RawQuery = parameters.Encode()
 
-	baseURL.RawQuery = parameters.Encode()
-
-	return baseURL, nil
+	return &newURL, nil
 }

@@ -19,6 +19,8 @@
 
 package gosrm
 
+import "encoding/json"
+
 // Main Response object
 type OSRMResponse struct {
 	// Response code
@@ -131,4 +133,17 @@ type Maneuver struct {
 	Modifier      string    `json:"modifier,omitempty"`
 	BearingBefore int       `json:"bearing_before,omitempty"`
 	Location      []float64 `json:"location,omitempty"`
+}
+
+func (r *OSRMResponse) String() string {
+	str := "\n"
+
+	json, err := json.MarshalIndent(r, "", "  ")
+	if err != nil {
+		return err.Error()
+	}
+
+	str += string(json) + "\n"
+
+	return str
 }

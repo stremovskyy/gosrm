@@ -19,9 +19,11 @@
 
 package gosrm
 
-type OSRM interface {
+type OsrmClient interface {
 	Route(r *RouteRequest) (*OSRMResponse, error)
 	Table(r *TableRequest) (*OSRMResponse, error)
-	Match(r *MatchRequest) (*OSRMResponse, error)
-	Nearest(r *NearestRequest) (*OSRMResponse, error)
+
+	SetOptions(options *Options)
+	ForProfile(profile string) OsrmClient
+	Debug() OsrmClient
 }

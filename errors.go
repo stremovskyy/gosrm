@@ -19,7 +19,10 @@
 
 package gosrm
 
-import "net/url"
+import (
+	"fmt"
+	"net/url"
+)
 
 // RespCode Errors which could be returned from OSRM Server
 var RespCode = map[string]string{
@@ -41,16 +44,24 @@ var RespCode = map[string]string{
 
 const CodeOK = "Ok"
 
+// Error represents an error response from the OSRM service.
 type Error struct {
-	Url         *url.URL
-	Err         error
+	URL         *url.URL
+	Code        string
+	Message     string
 	RawResponse *[]byte
 }
 
+// Error returns the string representation of the error.
 func (e *Error) Error() string {
-	return "[GOSRM][ERROR]: " + e.Err.Error()
+	return fmt.Sprintf("[GOSRM][ERROR]: %s - %s", e.Code, e.Message)
 }
 
 func NewGOSRMError(url *url.URL, err error, rawResponse *[]byte) *Error {
-	return &Error{Url: url, Err: err, RawResponse: rawResponse}
+	return &Error{
+		URL:         url,
+		Code:        "GOSRMError",
+		Message:     err.Error(),
+		RawResponse: rawResponse,
+	}
 }
